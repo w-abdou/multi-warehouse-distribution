@@ -8,7 +8,7 @@ import sqlite3
 import json
 import os
 from pathlib import Path
-from data.sample_data import warehouses, customers, orders, edges
+from data.sample_data import warehouses as sample_warehouses, custopythonmers as sample_customers, orders as sample_orders, edges as sample_edges
 
 
 # Import algorithm modules
@@ -117,28 +117,28 @@ def init_database():
     ''')
         
     # Insert warehouses
-    for w in warehouses:
+    for w in sample_warehouses:
         cursor.execute('''
             INSERT INTO warehouses (id, name, region, x, y, initial_stock, current_stock)
             VALUES (?, ?, ?, ?, ?, ?, ?)
         ''', (w['id'], w['name'], w['region'], w['x'], w['y'], w['initial_stock'], w['initial_stock']))
     
     # Insert customers
-    for c in customers:
+    for c in sample_customers:
         cursor.execute('''
             INSERT INTO customers (id, name, region, x, y)
             VALUES (?, ?, ?, ?, ?)
         ''', (c['id'], c['name'], c['region'], c['x'], c['y']))
     
     # Insert edges
-    for e in edges:
+    for e in sample_edges:
         cursor.execute('''
             INSERT INTO edges (source, destination, cost, delivery_time)
             VALUES (?, ?, ?, ?)
         ''', (e['source'], e['destination'], e['cost'], e['delivery_time']))
     
     # Insert orders
-    for o in orders:
+    for o in sample_orders:
         cursor.execute('''
             INSERT INTO orders (id, customer_id, region, weight, quantity)
             VALUES (?, ?, ?, ?, ?)
@@ -187,6 +187,9 @@ def api_network():
     
     # Get edges
     edges = [dict(row) for row in conn.execute('SELECT * FROM edges').fetchall()]
+
+    valid_node_ids = {w['id'] for w in warehouses} | {c['id'] for c in customers}
+    edges = [e for e in edges if e['source'] in valid_node_ids and e['destination'] in valid_node_ids]
     
     conn.close()
     
@@ -349,11 +352,12 @@ def api_run_all():
     conn = get_db()
     cursor = conn.cursor()
     
-    # Get data from database
-    warehouses = [dict(row) for row in conn.execute('SELECT * FROM warehouses').fetchall()]
-    customers = [dict(row) for row in conn.execute('SELECT * FROM customers').fetchall()]
-    edges = [dict(row) for row in conn.execute('SELECT * FROM edges').fetchall()]
-    orders = [dict(row) for row in conn.execute('SELECT * FROM orders').fetchall()]
+    # Read algorithm inputs directly from the bundled sample data so the
+    # dashboard always uses the known classroom dataset.
+    warehouses = [dict(w, current_stock=w['initial_stock']) for w in sample_warehouses]
+    customers = [dict(c) for c in sample_customers]
+    edges = [dict(e) for e in sample_edges]
+    orders = [dict(o) for o in sample_orders]
     
     # Clear previous results
     cursor.execute('DELETE FROM assignments')

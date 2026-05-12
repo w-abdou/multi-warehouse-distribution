@@ -1,10 +1,3 @@
-# ============================================================
-# DIJKSTRA'S SHORTEST PATH ALGORITHM
-# ============================================================
-# This implements Dijkstra's algorithm to find the shortest path
-# between all warehouse-customer pairs.
-# Used for: Calculating optimal shipping routes and costs.
-
 import heapq
 from typing import Dict, List, Tuple
 
@@ -60,6 +53,12 @@ def dijkstra_shortest_path(graph: Dict, start: int, all_nodes: List[int]) -> Dic
             neighbor = edge['neighbor']
             edge_cost = edge['cost']
             edge_time = edge['time']
+
+            # Ignore edges that point to nodes outside the current dataset.
+            # Sample data includes a few extra edges that are not part of the
+            # warehouse/customer graph used by the dashboard.
+            if neighbor not in distances:
+                continue
             
             # Calculate new distance if we go through current_node
             new_distance = distances[current_node] + edge_cost

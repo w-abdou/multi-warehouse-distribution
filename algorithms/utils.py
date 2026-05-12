@@ -1,8 +1,3 @@
-# ============================================================
-# UTILITY FUNCTIONS FOR ALGORITHMS
-# ============================================================
-# This file contains helper functions used by multiple algorithms.
-
 import heapq
 from typing import Dict, List, Tuple, Set
 

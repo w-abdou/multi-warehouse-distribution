@@ -1,9 +1,3 @@
-# ============================================================
-# DYNAMIC PROGRAMMING ORDER ASSIGNMENT
-# ============================================================
-# This implements a DP-based assignment of orders to warehouses
-# minimizing total shipping cost while respecting stock limits.
-# Used for: Optimal order-to-warehouse assignment.
 
 from typing import List, Dict, Tuple
 
@@ -31,7 +25,10 @@ def dp_order_assignment(orders: List[Dict], warehouses: List[Dict],
     """
     
     # Create mutable copy of warehouse stock
-    warehouse_stock = {w['id']: w['current_stock'] for w in warehouses}
+    warehouse_stock = {
+        w['id']: w.get('current_stock', w.get('initial_stock', 0))
+        for w in warehouses
+    }
     
     assignments = []
     total_cost = 0

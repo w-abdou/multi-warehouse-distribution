@@ -1,9 +1,3 @@
-# ============================================================
-# GREEDY BIN PACKING - SHIPMENT CONSOLIDATION
-# ============================================================
-# This implements Next-Fit greedy bin packing to consolidate
-# orders into shared shipments by region.
-# Used for: Grouping orders into shipments and calculating cost savings.
 
 from typing import List, Dict, Tuple
 from collections import defaultdict

@@ -1,10 +1,3 @@
-# ============================================================
-# KRUSKAL'S MINIMUM SPANNING TREE ALGORITHM
-# ============================================================
-# This implements Kruskal's algorithm to build a minimum spanning tree
-# connecting all warehouses with minimum total cost.
-# Used for: Building warehouse backbone network.
-
 from typing import List, Dict, Tuple, Set
 
 
