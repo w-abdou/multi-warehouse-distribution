@@ -15,7 +15,6 @@ This system manages:
 
 ### Backend
 - Python Flask
-- SQLite
 - Pure Python algorithms (no external algorithm libraries)
 
 ### Frontend
@@ -40,12 +39,6 @@ project/
 │   ├── greedy_binpacking.py # Greedy shipment consolidation
 │   └── utils.py             # Helper functions
 │
-├── data/
-│   ├── sample_warehouses.json
-│   ├── sample_customers.json
-│   ├── sample_orders.json
-│   └── sample_edges.json
-│
 └── frontend/
     └── index.html           # Single-file frontend
 ```
@@ -67,20 +60,6 @@ The app will start at `http://127.0.0.1:5000`
 ### 3. First Run
 - Database creates automatically with sample data
 - No manual setup required
-
-## API Endpoints
-
-### GET Endpoints
-- `/api/network` - Network graph data (warehouses, customers, edges)
-- `/api/orders` - Order list
-- `/api/assignments` - Order-to-warehouse assignments
-- `/api/mst` - Minimum spanning tree edges
-- `/api/comparison` - DP vs Greedy comparison metrics
-- `/api/shipments` - Consolidated shipment manifests
-- `/api/stock` - Warehouse inventory levels
-
-### POST Endpoints
-- `/api/run-all` - Execute all algorithms and return combined results
 
 ## Algorithms Implemented
 
@@ -141,28 +120,6 @@ Consolidates orders into shared shipments.
 
 5. **Stock Level Tracker**: Bar chart showing remaining inventory
 
-## Design Philosophy
-
-This project is designed for **learning**:
-- ✅ Clean, readable code
-- ✅ Heavy comments and documentation
-- ✅ No complex frameworks or patterns
-- ✅ Algorithms implemented from scratch
-- ✅ Simple SQLite directly (no ORM)
-- ✅ Vanilla JavaScript (no frameworks)
-- ✅ Single HTML file frontend
-
-## Running Your First Analysis
-
-1. Open `http://127.0.0.1:5000` in your browser
-2. Click **"Run All Algorithms"** button
-3. View results in the dashboard:
-   - Network map updates with MST and assignments
-   - Order assignment table populates
-   - Shipment manifests appear
-   - Comparison metrics display
-   - Stock chart updates
-
 ## Database Schema
 
 ### warehouses
@@ -192,17 +149,4 @@ This project is designed for **learning**:
 - Frontend is pure HTML/CSS/JS for maximum clarity
 - Sample data is loaded automatically on first run
 
-## Troubleshooting
 
-**Issue**: Port 5000 already in use
-**Solution**: Modify line in app.py: `app.run(debug=True, port=5001)`
-
-**Issue**: Database locks or permission errors
-**Solution**: Delete `database.db` and restart app.py
-
-**Issue**: Chart.js or Cytoscape.js not loading
-**Solution**: Check internet connection (CDN scripts are loaded from CDN)
-
-## License
-
-Free to use for educational purposes.
