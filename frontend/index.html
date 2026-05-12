@@ -125,7 +125,7 @@
         .card {
             background: white;
             border-radius: 8px;
-            padding: 20px;
+            padding: 80px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
         
@@ -248,7 +248,7 @@
         }
         
         .color-mst {
-            color: #9b59b6;
+            color: #2980b9;
             font-weight: bold;
         }
         
@@ -332,15 +332,15 @@
         <div class="metrics-grid" id="metricsGrid">
             <div class="metric-card cost">
                 <div class="metric-label">DP Total Cost</div>
-                <div class="metric-value" id="dpCost">$0<span class="metric-unit"></span></div>
+                <div class="metric-value" id="dpCost">EGP 0.00<span class="metric-unit"></span></div>
             </div>
             <div class="metric-card cost">
                 <div class="metric-label">Greedy Total Cost</div>
-                <div class="metric-value" id="greedyCost">$0<span class="metric-unit"></span></div>
+                <div class="metric-value" id="greedyCost">EGP 0.00<span class="metric-unit"></span></div>
             </div>
             <div class="metric-card savings">
                 <div class="metric-label">Cost Savings</div>
-                <div class="metric-value" id="costSavings">$0<span class="metric-unit"></span></div>
+                <div class="metric-value" id="costSavings">EGP 0.00<span class="metric-unit"></span></div>
             </div>
             <div class="metric-card shipments">
                 <div class="metric-label">Shipments Created</div>
@@ -371,7 +371,7 @@
                     <span class="color-customer">Customers</span>
                 </div>
                 <div class="legend-item">
-                    <div class="legend-color" style="background: #9b59b6;"></div>
+                    <div class="legend-color" style="background: #2980b9;"></div>
                     <span class="color-mst">MST Backbone</span>
                 </div>
                 <div class="legend-item">
@@ -484,9 +484,9 @@
         // ============================================================
         
         function updateMetrics(metrics) {
-            document.getElementById('dpCost').textContent = `$${metrics.dp_total_cost}`;
-            document.getElementById('greedyCost').textContent = `$${metrics.greedy_total_cost}`;
-            document.getElementById('costSavings').textContent = `$${metrics.cost_savings}`;
+            document.getElementById('dpCost').textContent = `EGP ${Number(metrics.dp_total_cost).toFixed(2)}`;
+            document.getElementById('greedyCost').textContent = `EGP ${Number(metrics.greedy_total_cost).toFixed(2)}`;
+            document.getElementById('costSavings').textContent = `EGP ${Number(metrics.cost_savings).toFixed(2)}`;
             document.getElementById('shipmentCount').textContent = `${metrics.shipment_count}`;
             document.getElementById('avgTime').textContent = `${metrics.average_delivery_time}`;
             document.getElementById('savingsPercent').textContent = `${metrics.savings_percentage}`;
@@ -510,10 +510,10 @@
                         data: {
                             id: `w${w.id}`,
                             label: w.name,
-                            x: w.x * 2,
-                            y: w.y * 2
+                            x: w.x * 2.8,
+                            y: w.y * 2.3
                         },
-                        position: { x: w.x * 2, y: w.y * 2 },
+                        position: { x: w.x * 2.8, y: w.y * 2.3 },
                         classes: 'warehouse'
                     });
                 });
@@ -524,38 +524,59 @@
                         data: {
                             id: `c${c.id}`,
                             label: c.name,
-                            x: c.x * 2,
-                            y: c.y * 2
+                            x: c.x * 2.8,
+                            y: c.y * 2.3
                         },
-                        position: { x: c.x * 2, y: c.y * 2 },
+                        position: { x: c.x * 2.8, y: c.y * 2.3 },
                         classes: 'customer'
                     });
                 });
                 
-                // Add MST edges
-                const mstSet = new Set(mstEdges.map(e => `${e.source}-${e.destination}`));
+                // Add MST edges (annotated with cost) and normal edges
+                const warehouseIds = new Set(network.warehouses.map(w => Number(w.id)));
+                const customerIds = new Set(network.customers.map(c => Number(c.id)));
+                const mstSet = new Set();
+                mstEdges.forEach(e => {
+                    const s = Number(e.source);
+                    const d = Number(e.destination);
+                    mstSet.add(`${s}-${d}`);
+                    mstSet.add(`${d}-${s}`);
+                });
+
+                function mapNodeId(rawId) {
+                    const id = Number(rawId);
+                    // Prefer warehouse mapping when ids overlap between warehouse/customer sets.
+                    if (warehouseIds.has(id)) return `w${id}`;
+                    if (customerIds.has(id)) return `c${id}`;
+                    return null;
+                }
+
                 network.edges.forEach(e => {
-                    const isMST = mstSet.has(`${e.source}-${e.destination}`);
+                    const srcId = mapNodeId(e.source);
+                    const tgtId = mapNodeId(e.destination);
+                    if (!srcId || !tgtId) return;
+
+                    const isMST = mstSet.has(`${Number(e.source)}-${Number(e.destination)}`);
                     elements.push({
                         data: {
                             id: `e${e.id}`,
-                            source: e.source <= 10 ? `w${e.source}` : `c${e.source}`,
-                            target: e.destination <= 10 ? `w${e.destination}` : `c${e.destination}`,
-                            label: `$${e.cost}`,
+                            source: srcId,
+                            target: tgtId,
+                            label: `EGP ${Number(e.cost).toFixed(2)}`,
                             weight: e.cost
                         },
                         classes: isMST ? 'mst-edge' : 'normal-edge'
                     });
                 });
                 
-                // Add assignment edges
+                // Add assignment edges (orange arrows with shipping cost annotated)
                 assignments.forEach(a => {
                     elements.push({
                         data: {
                             id: `a${a.order_id}`,
                             source: `w${a.warehouse_id}`,
                             target: `c${a.customer_id}`,
-                            label: `$${a.shipping_cost}`,
+                            label: `EGP ${Number(a.shipping_cost).toFixed(2)}`,
                             weight: 2
                         },
                         classes: 'assignment-edge'
@@ -576,12 +597,17 @@
                             style: {
                                 'background-color': '#3498db',
                                 'label': 'data(label)',
-                                'text-valign': 'center',
-                                'text-halign': 'center',
-                                'font-size': 12,
-                                'width': 30,
-                                'height': 30,
-                                'color': 'white'
+                                'text-valign': 'bottom',
+                                'text-margin-y': 8,
+                                'font-size': 11,
+                                'text-wrap': 'wrap',
+                                'text-max-width': 110,
+                                'width': 34,
+                                'height': 34,
+                                'color': '#1f2d3d',
+                                'text-background-color': '#ffffff',
+                                'text-background-opacity': 0.85,
+                                'text-background-padding': 2
                             }
                         },
                         {
@@ -589,49 +615,70 @@
                             style: {
                                 'background-color': '#27ae60',
                                 'label': 'data(label)',
-                                'text-valign': 'center',
-                                'text-halign': 'center',
-                                'font-size': 12,
-                                'width': 25,
-                                'height': 25,
-                                'color': 'white'
+                                'text-valign': 'bottom',
+                                'text-margin-y': 7,
+                                'font-size': 10,
+                                'text-wrap': 'wrap',
+                                'text-max-width': 100,
+                                'width': 26,
+                                'height': 26,
+                                'color': '#1f2d3d',
+                                'text-background-color': '#ffffff',
+                                'text-background-opacity': 0.85,
+                                'text-background-padding': 2
                             }
                         },
                         {
                             selector: 'edge.normal-edge',
                             style: {
-                                'stroke': '#bdc3c7',
-                                'stroke-width': 1,
+                                'line-color': '#bdc3c7',
+                                'width': 1,
                                 'target-arrow-shape': 'none',
-                                'opacity': 0.4
+                                'opacity': 0.4,
+                                'label': ''
                             }
                         },
                         {
                             selector: 'edge.mst-edge',
                             style: {
-                                'stroke': '#9b59b6',
-                                'stroke-width': 3,
+                                'line-color': '#2980b9',
+                                'width': 3,
                                 'target-arrow-shape': 'none',
-                                'opacity': 0.9,
-                                'line-style': 'solid'
+                                'opacity': 0.95,
+                                'line-style': 'solid',
+                                'label': 'data(label)',
+                                'font-size': 11,
+                                'text-rotation': 'autorotate',
+                                'text-background-color': '#ffffff',
+                                'text-background-opacity': 0.8,
+                                'text-background-padding': 3
                             }
                         },
                         {
                             selector: 'edge.assignment-edge',
                             style: {
-                                'stroke': '#e67e22',
-                                'stroke-width': 2,
+                                'line-color': '#e67e22',
+                                'width': 2,
                                 'target-arrow-shape': 'triangle',
                                 'target-arrow-color': '#e67e22',
-                                'opacity': 0.7,
-                                'line-style': 'dashed'
+                                'opacity': 0.9,
+                                'line-style': 'dashed',
+                                'label': 'data(label)',
+                                'font-size': 11,
+                                'text-rotation': 'autorotate',
+                                'text-background-color': '#ffffff',
+                                'text-background-opacity': 0.9,
+                                'text-background-padding': 4
                             }
                         }
                     ],
                     layout: {
-                        name: 'preset'
+                        name: 'preset',
+                        padding: 50
                     }
                 });
+
+                networkVisualization.fit(undefined, 50);
             } catch (error) {
                 console.error('Network visualization error:', error);
             }
@@ -656,7 +703,7 @@
                     <td>#${a.order_id}</td>
                     <td>Customer ${a.customer_id}</td>
                     <td>Warehouse ${a.warehouse_id}</td>
-                    <td>$${a.shipping_cost.toFixed(2)}</td>
+                    <td>EGP ${a.shipping_cost.toFixed(2)}</td>
                     <td>${a.delivery_time} hrs</td>
                 `;
                 tbody.appendChild(row);
@@ -706,7 +753,27 @@
                 if (stockChart) {
                     stockChart.destroy();
                 }
-                
+                const valueLabelPlugin = {
+                    id: 'valueLabels',
+                    afterDatasetsDraw(chart) {
+                        const { ctx } = chart;
+                        ctx.save();
+                        const dataset = chart.data.datasets[0];
+                        const meta = chart.getDatasetMeta(0);
+                        meta.data.forEach((bar, index) => {
+                            const val = dataset.data[index];
+                            const x = bar.x;
+                            const y = bar.y;
+                            ctx.fillStyle = '#1f2d3d';
+                            ctx.font = '12px Arial';
+                            ctx.textAlign = 'center';
+                            ctx.textBaseline = 'bottom';
+                            ctx.fillText(Number(val).toLocaleString(), x, y - 6);
+                        });
+                        ctx.restore();
+                    }
+                };
+
                 stockChart = new Chart(ctx, {
                     type: 'bar',
                     data: {
@@ -725,22 +792,30 @@
                         maintainAspectRatio: false,
                         plugins: {
                             legend: {
-                                display: true,
-                                labels: { font: { size: 12 } }
+                                display: false
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        const v = context.parsed.y;
+                                        return context.dataset.label + ': ' + Number(v).toLocaleString();
+                                    }
+                                }
                             }
                         },
                         scales: {
                             y: {
                                 beginAtZero: true,
-                                ticks: { font: { size: 11 } },
+                                ticks: { font: { size: 13 }, callback: v => Number(v).toLocaleString() },
                                 grid: { color: '#ecf0f1' }
                             },
                             x: {
-                                ticks: { font: { size: 11 } },
+                                ticks: { font: { size: 12 }, maxRotation: 45, minRotation: 0 },
                                 grid: { display: false }
                             }
                         }
-                    }
+                    },
+                    plugins: [valueLabelPlugin]
                 });
             } catch (error) {
                 console.error('Stock chart error:', error);

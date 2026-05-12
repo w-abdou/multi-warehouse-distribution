@@ -8,7 +8,7 @@ import sqlite3
 import json
 import os
 from pathlib import Path
-from data.sample_data import warehouses as sample_warehouses, custopythonmers as sample_customers, orders as sample_orders, edges as sample_edges
+from data.sample_data import warehouses as sample_warehouses, customers as sample_customers, orders as sample_orders, edges as sample_edges
 
 
 # Import algorithm modules
@@ -177,21 +177,13 @@ def api_network():
     - customers: list of customer nodes  
     - edges: list of transportation edges
     """
-    conn = get_db()
-    
-    # Get warehouses
-    warehouses = [dict(row) for row in conn.execute('SELECT * FROM warehouses').fetchall()]
-    
-    # Get customers
-    customers = [dict(row) for row in conn.execute('SELECT * FROM customers').fetchall()]
-    
-    # Get edges
-    edges = [dict(row) for row in conn.execute('SELECT * FROM edges').fetchall()]
+    # Use bundled sample data so the graph is always consistent with Run All output.
+    warehouses = [dict(w, current_stock=w['initial_stock']) for w in sample_warehouses]
+    customers = [dict(c) for c in sample_customers]
+    edges = [dict(e, id=i + 1) for i, e in enumerate(sample_edges)]
 
     valid_node_ids = {w['id'] for w in warehouses} | {c['id'] for c in customers}
     edges = [e for e in edges if e['source'] in valid_node_ids and e['destination'] in valid_node_ids]
-    
-    conn.close()
     
     return jsonify({
         'warehouses': warehouses,
@@ -336,6 +328,17 @@ def api_stock():
     stock = [dict(row) for row in conn.execute(
         'SELECT id, name, current_stock FROM warehouses'
     ).fetchall()]
+
+    # Fallback to bundled sample stock if DB rows are missing.
+    if not stock:
+        stock = [
+            {
+                'id': w['id'],
+                'name': w['name'],
+                'current_stock': w['initial_stock']
+            }
+            for w in sample_warehouses
+        ]
     
     conn.close()
     
