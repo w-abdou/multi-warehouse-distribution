@@ -332,15 +332,15 @@
         <div class="metrics-grid" id="metricsGrid">
             <div class="metric-card cost">
                 <div class="metric-label">DP Total Cost</div>
-                <div class="metric-value" id="dpCost">$0<span class="metric-unit"></span></div>
+                <div class="metric-value" id="dpCost">EGP0<span class="metric-unit"></span></div>
             </div>
             <div class="metric-card cost">
                 <div class="metric-label">Greedy Total Cost</div>
-                <div class="metric-value" id="greedyCost">$0<span class="metric-unit"></span></div>
+                <div class="metric-value" id="greedyCost">EGP0<span class="metric-unit"></span></div>
             </div>
             <div class="metric-card savings">
                 <div class="metric-label">Cost Savings</div>
-                <div class="metric-value" id="costSavings">$0<span class="metric-unit"></span></div>
+                <div class="metric-value" id="costSavings">EGP0<span class="metric-unit"></span></div>
             </div>
             <div class="metric-card shipments">
                 <div class="metric-label">Shipments Created</div>
@@ -484,9 +484,10 @@
         // ============================================================
         
         function updateMetrics(metrics) {
-            document.getElementById('dpCost').textContent = `$${metrics.dp_total_cost}`;
-            document.getElementById('greedyCost').textContent = `$${metrics.greedy_total_cost}`;
-            document.getElementById('costSavings').textContent = `$${metrics.cost_savings}`;
+            // Display all monetary values in Egyptian Pounds (EGP)
+            document.getElementById('dpCost').textContent = `EGP${metrics.dp_total_cost}`;
+            document.getElementById('greedyCost').textContent = `EGP${metrics.greedy_total_cost}`;
+            document.getElementById('costSavings').textContent = `EGP${metrics.cost_savings}`;
             document.getElementById('shipmentCount').textContent = `${metrics.shipment_count}`;
             document.getElementById('avgTime').textContent = `${metrics.average_delivery_time}`;
             document.getElementById('savingsPercent').textContent = `${metrics.savings_percentage}`;
@@ -541,7 +542,7 @@
                             id: `e${e.id}`,
                             source: e.source <= 10 ? `w${e.source}` : `c${e.source}`,
                             target: e.destination <= 10 ? `w${e.destination}` : `c${e.destination}`,
-                            label: `$${e.cost}`,
+                            label: `EGP${e.cost}`,
                             weight: e.cost
                         },
                         classes: isMST ? 'mst-edge' : 'normal-edge'
@@ -555,7 +556,7 @@
                             id: `a${a.order_id}`,
                             source: `w${a.warehouse_id}`,
                             target: `c${a.customer_id}`,
-                            label: `$${a.shipping_cost}`,
+                            label: `EGP${a.shipping_cost}`,
                             weight: 2
                         },
                         classes: 'assignment-edge'
@@ -656,7 +657,7 @@
                     <td>#${a.order_id}</td>
                     <td>Customer ${a.customer_id}</td>
                     <td>Warehouse ${a.warehouse_id}</td>
-                    <td>$${a.shipping_cost.toFixed(2)}</td>
+                    <td>EGP${a.shipping_cost.toFixed(2)}</td>
                     <td>${a.delivery_time} hrs</td>
                 `;
                 tbody.appendChild(row);

@@ -5,9 +5,11 @@
 
 from flask import Flask, jsonify, send_from_directory
 import sqlite3
-import json
 import os
 from pathlib import Path
+
+# Load seed records from Python data module (instead of JSON files)
+from data.sample_data import warehouses, customers, orders, edges
 
 # Import algorithm modules
 from algorithms.dijkstra import compute_all_warehouse_routes, dijkstra_shortest_path
@@ -114,15 +116,8 @@ def init_database():
         )
     ''')
     
-    # Load sample data from JSON files
-    with open('data/sample_warehouses.json', 'r') as f:
-        warehouses = json.load(f)
-    with open('data/sample_customers.json', 'r') as f:
-        customers = json.load(f)
-    with open('data/sample_orders.json', 'r') as f:
-        orders = json.load(f)
-    with open('data/sample_edges.json', 'r') as f:
-        edges = json.load(f)
+    # Seed data now comes from data/sample_data.py (Python lists)
+    print(f"[*] Loading {len(warehouses)} warehouses, {len(customers)} customers, {len(orders)} orders, {len(edges)} edges")
     
     # Insert warehouses
     for w in warehouses:
