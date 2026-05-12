@@ -1,0 +1,12 @@
+[
+  {"id": 1, "name": "Customer A", "region": "North", "x": 150, "y": 450},
+  {"id": 2, "name": "Customer B", "region": "North", "x": 200, "y": 380},
+  {"id": 3, "name": "Customer C", "region": "South", "x": 120, "y": 50},
+  {"id": 4, "name": "Customer D", "region": "South", "x": 180, "y": 120},
+  {"id": 5, "name": "Customer E", "region": "East", "x": 450, "y": 300},
+  {"id": 6, "name": "Customer F", "region": "East", "x": 500, "y": 200},
+  {"id": 7, "name": "Customer G", "region": "West", "x": 280, "y": 350},
+  {"id": 8, "name": "Customer H", "region": "West", "x": 220, "y": 200},
+  {"id": 9, "name": "Customer I", "region": "Center", "x": 300, "y": 250},
+  {"id": 10, "name": "Customer J", "region": "Center", "x": 350, "y": 350}
+]

@@ -1,0 +1,17 @@
+[
+  {"source": 1, "destination": 2, "cost": 50, "delivery_time": 2},
+  {"source": 1, "destination": 3, "cost": 80, "delivery_time": 3},
+  {"source": 1, "destination": 4, "cost": 60, "delivery_time": 2},
+  {"source": 2, "destination": 1, "cost": 50, "delivery_time": 2},
+  {"source": 2, "destination": 3, "cost": 90, "delivery_time": 4},
+  {"source": 2, "destination": 4, "cost": 70, "delivery_time": 3},
+  {"source": 3, "destination": 1, "cost": 80, "delivery_time": 3},
+  {"source": 3, "destination": 2, "cost": 90, "delivery_time": 4},
+  {"source": 3, "destination": 4, "cost": 55, "delivery_time": 2},
+  {"source": 4, "destination": 1, "cost": 60, "delivery_time": 2},
+  {"source": 4, "destination": 2, "cost": 70, "delivery_time": 3},
+  {"source": 4, "destination": 3, "cost": 55, "delivery_time": 2},
+  {"source": 1, "destination": 11, "cost": 25, "delivery_time": 1},
+  {"source": 2, "destination": 12, "cost": 30, "delivery_time": 1},
+  {"source": 3, "destination": 5, "cost": 40, "delivery_time": 1}
+]
