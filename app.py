@@ -5,8 +5,6 @@
 
 from flask import Flask, jsonify, send_from_directory
 import sqlite3
-import os
-from pathlib import Path
 
 # Load seed records from Python data module (instead of JSON files)
 from data.sample_data import warehouses, customers, orders, edges
