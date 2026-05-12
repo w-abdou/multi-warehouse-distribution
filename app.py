@@ -8,6 +8,8 @@ import sqlite3
 import json
 import os
 from pathlib import Path
+from data.sample_data import warehouses, customers, orders, edges
+
 
 # Import algorithm modules
 from algorithms.dijkstra import compute_all_warehouse_routes, dijkstra_shortest_path
@@ -113,17 +115,7 @@ def init_database():
             FOREIGN KEY(warehouse_id) REFERENCES warehouses(id)
         )
     ''')
-    
-    # Load sample data from JSON files
-    with open('data/sample_warehouses.json', 'r') as f:
-        warehouses = json.load(f)
-    with open('data/sample_customers.json', 'r') as f:
-        customers = json.load(f)
-    with open('data/sample_orders.json', 'r') as f:
-        orders = json.load(f)
-    with open('data/sample_edges.json', 'r') as f:
-        edges = json.load(f)
-    
+        
     # Insert warehouses
     for w in warehouses:
         cursor.execute('''
