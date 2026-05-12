@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Multi-Warehouse Distribution System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
+  </head>
+  <body>
+    <main class="app">
+      <header class="header">
+        <h1>Multi-Warehouse Distribution System</h1>
+        <p>Simple Flask app for order assignment and shipment grouping.</p>
+      </header>
+
+      <section class="card controls">
+        <button id="runButton" class="button">Run analysis</button>
+      </section>
+
+      <section class="card">
+        <h2>Edit Scenario</h2>
+        <div class="editor-grid">
+          <label>
+            Type
+            <select id="nodeType">
+              <option value="customer">Customer brand</option>
+              <option value="warehouse">Warehouse code</option>
+            </select>
+          </label>
+          <label>
+            Code / ID
+            <input id="nodeId" type="text" placeholder="C6 or WH-NR4" />
+          </label>
+          <label>
+            Full name
+            <input id="nodeName" type="text" placeholder="Example brand or warehouse name" />
+          </label>
+          <label id="stockField">
+            Stock
+            <input id="nodeStock" type="number" min="1" step="1" value="3" />
+          </label>
+          <label id="regionField">
+            Region
+            <input id="nodeRegion" type="text" value="Retail" />
+          </label>
+        </div>
+        <div class="editor-actions">
+          <button id="addNodeButton" class="button secondary">Add to graph</button>
+          <button id="resetButton" class="button secondary">Reset sample</button>
+        </div>
+        <h3>Saved Nodes in Database</h3>
+        <div id="nodesList" class="table-wrap"></div>
+      </section>
+
+      <section class="card">
+        <h2>Warehouse Network Map</h2>
+        <div id="networkMap" class="map-wrap"></div>
+      </section>
+
+      <section class="card">
+        <h2>Summary</h2>
+        <div id="summaryCards" class="summary-grid"></div>
+      </section>
+
+      <section class="card">
+        <h2>Order Assignments</h2>
+        <div id="assignmentTable" class="table-wrap"></div>
+      </section>
+
+      <section class="card">
+        <h2>Shipment Manifests</h2>
+        <div id="shipmentTable" class="table-wrap"></div>
+      </section>
+
+      <section class="card">
+        <h2>Stock Level Tracker</h2>
+        <div id="stockChart" style="margin-bottom: 2rem;"></div>
+        <h3>Stock Details</h3>
+        <div id="stockTable" class="table-wrap"></div>
+      </section>
+
+      <section class="card">
+        <h2>Comparison Dashboard</h2>
+        <div id="comparisonCards" class="summary-grid"></div>
+      </section>
+    </main>
+
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+  </body>
+</html>
